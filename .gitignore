@@ -9,6 +9,8 @@
 /.idea/jarRepositories.xml
 /.idea/.name
 /.idea/assetWizardSettings.xml
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
 /gradlew.bat
 /gradlew
 .DS_Store

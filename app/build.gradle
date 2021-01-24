@@ -12,9 +12,24 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1" + "." + versionCode
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        File localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            Properties props = new Properties()
+            props.load(localPropsFile.newDataInputStream())
+
+            def mapsKey = props.getProperty("maps.key", "")
+            if (mapsKey.isEmpty()) {
+                println("WARNING: maps key is impty")
+            }
+
+            manifestPlaceholders = [mapsKey: mapsKey]
+        } else {
+            println("WARNING: local.properties file not exist")
+        }
     }
 
     buildTypes {
@@ -38,10 +53,29 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+
+    // Koin
+    implementation "org.koin:koin-android:$koin"
+    implementation "org.koin:koin-android-scope:$koin"
+    implementation "org.koin:koin-android-viewmodel:$koin"
+
+    // Navigation Component
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_component"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_component"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+
+    // Google maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation "com.google.maps.android:android-maps-utils:2.0.3"
 
     // Testing
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
