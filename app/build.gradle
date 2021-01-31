@@ -90,12 +90,16 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_component"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_component"
 
-    // ViewModel
+    // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
 
     // Google maps
     implementation "com.google.android.gms:play-services-maps:$google_maps"
     implementation "com.google.maps.android:android-maps-utils:$google_maps_utils"
+
+    // Logger
+    implementation "com.jakewharton.timber:timber:$timber"
 
     // Testing
     testImplementation 'junit:junit:4.13.1'
