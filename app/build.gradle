@@ -23,10 +23,22 @@ android {
 
             def mapsKey = props.getProperty("maps.key", "")
             if (mapsKey.isEmpty()) {
-                println("WARNING: maps key is impty")
+                println("WARNING: maps key is empty")
+            } else {
+                println("Google map key: $mapsKey")
+            }
+
+            //noinspection SpellCheckingInspection
+            def golemioKey = props.getProperty("golemio.key", "")
+            if (golemioKey.isEmpty()) {
+                println("WARNING: golemio key is empty")
+            } else {
+                println("Golemio key: $golemioKey")
             }
 
             manifestPlaceholders = [mapsKey: mapsKey]
+
+            buildConfigField "String", "GOLEMIO_KEY", "\"${golemioKey}\""
         } else {
             println("WARNING: local.properties file not exist")
         }
