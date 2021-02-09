@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Parker</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="location_permissions_explanation">App needs location permission to show your current location on the map.</string>
+    <string name="location_permissions_not_granted">Sorry, but we can\'t show your current location</string>
+    <string name="google_play_services_not_available">Sorry, but we Google Play services not installed on your device. We can\'t determine your location</string>
 </resources>

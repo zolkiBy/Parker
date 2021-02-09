@@ -9,5 +9,39 @@
         android:id="@+id/mapFragment"
         android:name="com.zolki.parker.feature.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_advisoryDialog"
+            app:destination="@id/advisoryDialogFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_permissionExplanationDialog"
+            app:destination="@id/permissionExplanationDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/advisoryDialogFragment"
+        android:name="com.zolki.parker.feature.common.AdvisoryDialog"
+        android:label="AdvisoryDialogFragment"
+        tools:layout="@layout/dialog_advisory">
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="description"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="btnText"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/permissionExplanationDialog"
+        android:name="com.zolki.parker.feature.map.PermissionExplanationDialog"
+        android:label="PermissionExplanationDialog"
+        tools:layout="@layout/dialog_permission_explanation" />
 </navigation>
