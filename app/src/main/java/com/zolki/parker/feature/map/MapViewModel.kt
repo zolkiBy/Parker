@@ -1,17 +1,18 @@
 package com.zolki.parker.feature.map
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.zolki.parker.R
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.zolki.parker.data.model.Parking
+import com.zolki.parker.data.repository.ParkingRepository
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-class MapViewModel : ViewModel() {
+class MapViewModel(private val parkingRepository: ParkingRepository) : ViewModel() {
 
     private val _showPermissionsFlow = MutableStateFlow(false)
     val showPermissionsFlow: StateFlow<Boolean> = _showPermissionsFlow
@@ -27,6 +28,9 @@ class MapViewModel : ViewModel() {
 
     private val _enableMapMyLocationLayer = MutableSharedFlow<Boolean>()
     val enableMapMyLocationLayer: SharedFlow<Boolean> = _enableMapMyLocationLayer
+
+    private val _parking = MutableStateFlow(emptyList<Parking>())
+    val parking: StateFlow<List<Parking>> = _parking
 
     fun onMapReady() {
         viewModelScope.launch { _showPermissionsFlow.emit(true) }
@@ -64,5 +68,15 @@ class MapViewModel : ViewModel() {
     fun onGooglePlayServicesNotAvailable() {
         Timber.d("onGooglePlayServicesNotAvailable called")
         viewModelScope.launch { _showAdvisoryScreen.emit(R.string.google_play_services_not_available) }
+    }
+
+    fun onLoadParking() {
+        launchInViewModelScope {
+            parkingRepository.getParking().collect { _parking.emit(it) }
+        }
+    }
+
+    private fun launchInViewModelScope(block: suspend () -> Unit) {
+        viewModelScope.launch { block() }
     }
 }
