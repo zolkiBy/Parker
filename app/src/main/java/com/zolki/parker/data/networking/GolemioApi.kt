@@ -9,11 +9,11 @@ import retrofit2.http.Query
 interface GolemioApi {
     @GET("parkings")
     suspend fun getParking(
-        @Query(value = "latlng") latLng: String?,
-        @Query(value = "range") range: Long?,
-        @Query(value = "districts[]") districts: List<String>?,
-        @Query(value = "limit") limit: Long?,
-        @Query(value = "offset") offset: Long?,
-        @Query(value = "updatedSince") updateSince: String?
+        @Query(value = "latlng") latLng: String? = null,
+        @Query(value = "range") range: Long? = null,
+        @Query(value = "districts[]") districts: List<String>? = null,
+        @Query(value = "limit") limit: Long? = null,
+        @Query(value = "offset") offset: Long? = null,
+        @Query(value = "updatedSince") updateSince: String? = null
     ): Result<ParkingDTO>
 }

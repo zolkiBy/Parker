@@ -1,8 +1,7 @@
 package com.zolki.parker.feature.map
 
-import androidx.lifecycle.LiveData
+import android.location.Location
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.zolki.parker.R
 import com.zolki.parker.data.model.Parking
@@ -13,6 +12,10 @@ import timber.log.Timber
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class MapViewModel(private val parkingRepository: ParkingRepository) : ViewModel() {
+
+    companion object {
+        private const val RANGE_IN_METERS = 1000L
+    }
 
     private val _showPermissionsFlow = MutableStateFlow(false)
     val showPermissionsFlow: StateFlow<Boolean> = _showPermissionsFlow
@@ -28,6 +31,9 @@ class MapViewModel(private val parkingRepository: ParkingRepository) : ViewModel
 
     private val _enableMapMyLocationLayer = MutableSharedFlow<Boolean>()
     val enableMapMyLocationLayer: SharedFlow<Boolean> = _enableMapMyLocationLayer
+
+    private val _locationUpdatesEnabled = MutableSharedFlow<Boolean>()
+    val locationUpdatesEnabled: SharedFlow<Boolean> = _locationUpdatesEnabled
 
     private val _parking = MutableStateFlow(emptyList<Parking>())
     val parking: StateFlow<List<Parking>> = _parking
@@ -52,27 +58,36 @@ class MapViewModel(private val parkingRepository: ParkingRepository) : ViewModel
 
     fun onPermissionsGrantedResult() {
         Timber.d("onPermissionsGrantedResult called")
-        viewModelScope.launch { _enableMapMyLocationLayer.emit(true) }
+        viewModelScope.launch {
+            _enableMapMyLocationLayer.emit(true)
+            _locationUpdatesEnabled.emit(true)
+        }
     }
 
     fun onPermissionsNotGrantedResult() {
         Timber.d("onPermissionsNotGrantedResult called")
-        viewModelScope.launch { _showAdvisoryScreen.emit(R.string.location_permissions_not_granted) }
+        viewModelScope.launch {
+            _showAdvisoryScreen.emit(R.string.fragment_map_location_permissions_not_granted)
+            _locationUpdatesEnabled.emit(false)
+        }
     }
 
     fun onPermissionsGranted() {
         Timber.d("onPermissionsGranted called")
-        viewModelScope.launch { _enableMapMyLocationLayer.emit(true) }
+        viewModelScope.launch {
+            _enableMapMyLocationLayer.emit(true)
+            _locationUpdatesEnabled.emit(true)
+        }
     }
 
     fun onGooglePlayServicesNotAvailable() {
         Timber.d("onGooglePlayServicesNotAvailable called")
-        viewModelScope.launch { _showAdvisoryScreen.emit(R.string.google_play_services_not_available) }
+        viewModelScope.launch { _showAdvisoryScreen.emit(R.string.fragment_map_google_play_services_not_available) }
     }
 
-    fun onLoadParking() {
+    fun onLocationChanged(location: Location) {
         launchInViewModelScope {
-            parkingRepository.getParking().collect { _parking.emit(it) }
+            parkingRepository.getParking(location.latitude, location.longitude, RANGE_IN_METERS).collect { _parking.emit(it) }
         }
     }
 

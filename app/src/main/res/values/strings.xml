@@ -2,7 +2,8 @@
     <string name="app_name">Parker</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="location_permissions_explanation">App needs location permission to show your current location on the map.</string>
-    <string name="location_permissions_not_granted">Sorry, but we can\'t show your current location</string>
-    <string name="google_play_services_not_available">Sorry, but we Google Play services not installed on your device. We can\'t determine your location</string>
+    <string name="dialog_permission_explanation">App needs location permission to show your current location on the map.</string>
+    <string name="fragment_map_location_permissions_not_granted">Sorry, but we can\'t show your current location</string>
+    <string name="fragment_map_google_play_services_not_available">Sorry, but Google Play services not installed on your device. We can\'t determine your location</string>
+    <string name="fragment_map_marker_snippet">Free places: %1$d, taken places: %2$d</string>
 </resources>

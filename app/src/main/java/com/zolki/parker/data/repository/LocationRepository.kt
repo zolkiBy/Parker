@@ -3,6 +3,7 @@ package com.zolki.parker.data.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import android.os.Looper
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -24,16 +25,29 @@ class LocationRepository(lifecycle: Lifecycle, context: Context, private val cor
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             locationResult ?: return
-            coroutineScope.launch { produceLocationEvent(locationResult.lastLocation) }
+            coroutineScope.launch {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    produceLocationEvent(locationResult.lastLocation)
+                }
+            }
         }
     }
-    private val locationRequest = LocationRequest.create()?.apply {
+    private val locationRequest = LocationRequest.create().apply {
         interval = UPDATE_INTERVAL
         fastestInterval = FASTEST_INTERVAL
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 
     val location: SharedFlow<Location> = _locationFlow
+    var locationUpdatesEnabled: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                start()
+            } else {
+                stop()
+            }
+        }
 
     init {
         lifecycle.addObserver(this)
@@ -42,7 +56,9 @@ class LocationRepository(lifecycle: Lifecycle, context: Context, private val cor
     @Suppress("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun start() {
-        startLocationUpdates()
+        if (locationUpdatesEnabled) {
+            startLocationUpdates()
+        }
     }
 
     @Suppress("unused")
@@ -56,7 +72,7 @@ class LocationRepository(lifecycle: Lifecycle, context: Context, private val cor
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            null
+            Looper.getMainLooper()
         )
     }
 

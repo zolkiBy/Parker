@@ -13,7 +13,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:gravity="center"
-        android:text="@string/location_permissions_explanation"
+        android:text="@string/dialog_permission_explanation"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/ok_btn"
         app:layout_constraintEnd_toEndOf="parent"

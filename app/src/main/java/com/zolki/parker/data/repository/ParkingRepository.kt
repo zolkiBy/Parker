@@ -17,7 +17,25 @@ class ParkingRepository(@Suppress("SpellCheckingInspection") val golemioApi: Gol
     @FlowPreview
     suspend fun getParking(): Flow<List<Parking>> {
         return flow {
-            val result: Result<ParkingDTO> = golemioApi.getParking(null, null, null, null, null, null)
+            val result: Result<ParkingDTO> = golemioApi.getParking()
+            if (result.isSuccess()) {
+                val parkingList = result.asSuccess().value.features
+                    .map { feature -> feature.toParking() }
+                emit(parkingList)
+            } else {
+                result.asFailure().error?.let { throwable ->
+                    throw throwable
+                } ?: throw error("Can't load parking data")
+            }
+        }
+            .flowOn(Dispatchers.IO)
+            .conflate()
+    }
+
+    suspend fun getParking(latitude: Double, longitude: Double, range: Long): Flow<List<Parking>> {
+        return flow {
+            val latLng = "$latitude,$longitude"
+            val result: Result<ParkingDTO> = golemioApi.getParking(latLng = latLng, range = range)
             if (result.isSuccess()) {
                 val parkingList = result.asSuccess().value.features
                     .map { feature -> feature.toParking() }
